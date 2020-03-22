@@ -102,12 +102,13 @@ public final class Bootstrap {
                 homeFile = f.getAbsoluteFile();
             }
         }
-
+        //设置 catalinaHomeFile
         catalinaHomeFile = homeFile;
         System.setProperty(
                 Globals.CATALINA_HOME_PROP, catalinaHomeFile.getPath());
 
         // Then base
+        //设置 catalinaBaseFile
         String base = System.getProperty(Globals.CATALINA_BASE_PROP);
         if (base == null) {
             catalinaBaseFile = catalinaHomeFile;
@@ -131,9 +132,12 @@ public final class Bootstrap {
      * Daemon reference.
      */
     private Object catalinaDaemon = null;
-
+    // tomcat 自定义三个类加载器 URLClassLoader
+    // 打破 jvm 类加载器 双亲委派
     ClassLoader commonLoader = null;
+    // 服务器类加载器
     ClassLoader catalinaLoader = null;
+    // webApps应用类加载器 WEB-INF/classes、lib
     ClassLoader sharedLoader = null;
 
 
@@ -142,12 +146,15 @@ public final class Bootstrap {
 
     private void initClassLoaders() {
         try {
+            // 父类加载器 null 只找到当前 不往上找了 打破了双亲委派
             commonLoader = createClassLoader("common", null);
             if (commonLoader == null) {
                 // no config file, default to this loader - we might be in a 'single' env.
                 commonLoader = this.getClass().getClassLoader();
             }
+            // 父类加载器 commonLoader
             catalinaLoader = createClassLoader("server", commonLoader);
+            // 父类加载器 commonLoader
             sharedLoader = createClassLoader("shared", commonLoader);
         } catch (Throwable t) {
             handleThrowable(t);
@@ -248,16 +255,17 @@ public final class Bootstrap {
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
-
+        // 初始化 ClassLoader
         initClassLoaders();
-
+        // 设置上下文加载器
         Thread.currentThread().setContextClassLoader(catalinaLoader);
-
+        // 设置安全加载器
         SecurityClassLoad.securityClassLoad(catalinaLoader);
 
         // Load our startup class and call its process() method
         if (log.isDebugEnabled())
             log.debug("Loading startup class");
+        // 反射加载 Catalina
         Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
         Object startupInstance = startupClass.getConstructor().newInstance();
 
@@ -440,12 +448,14 @@ public final class Bootstrap {
                 // Don't set daemon until init() has completed
                 Bootstrap bootstrap = new Bootstrap();
                 try {
+                    // 初始化
                     bootstrap.init();
                 } catch (Throwable t) {
                     handleThrowable(t);
                     t.printStackTrace();
                     return;
                 }
+                //引用 bootstrap
                 daemon = bootstrap;
             } else {
                 // When running as a service the call to stop will be on a new
@@ -469,6 +479,7 @@ public final class Bootstrap {
                 args[args.length - 1] = "stop";
                 daemon.stop();
             } else if (command.equals("start")) {
+                // 启动
                 daemon.setAwait(true);
                 daemon.load(args);
                 daemon.start();
