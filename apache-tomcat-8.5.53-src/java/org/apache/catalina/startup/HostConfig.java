@@ -420,7 +420,9 @@ public class HostConfig implements LifecycleListener {
         File appBase = host.getAppBaseFile();
         File configBase = host.getConfigBaseFile();
         String[] filteredAppPaths = filterAppPaths(appBase.list());
+        // 三种部署方式
         // Deploy XML descriptors from configBase
+        // <host><context>
         deployDescriptors(configBase, configBase.list());
         // Deploy WARs
         deployWARs(appBase, filteredAppPaths);
@@ -1563,6 +1565,7 @@ public class HostConfig implements LifecycleListener {
             host.setDeployOnStartup(false);
             host.setAutoDeploy(false);
         }
+        // 部署webapp
 
         if (host.getDeployOnStartup())
             deployApps();

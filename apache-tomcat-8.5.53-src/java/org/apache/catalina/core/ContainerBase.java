@@ -948,7 +948,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase
             ((Lifecycle) pipeline).start();
         }
 
-
+        // 状态的变化会激发监听器Listener->HostConfig
         setState(LifecycleState.STARTING);
 
         // Start our thread

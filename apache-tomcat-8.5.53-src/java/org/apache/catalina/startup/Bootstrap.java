@@ -280,7 +280,7 @@ public final class Bootstrap {
         Method method =
             startupInstance.getClass().getMethod(methodName, paramTypes);
         method.invoke(startupInstance, paramValues);
-
+        // 返回 Catalina
         catalinaDaemon = startupInstance;
     }
 
@@ -448,7 +448,7 @@ public final class Bootstrap {
                 // Don't set daemon until init() has completed
                 Bootstrap bootstrap = new Bootstrap();
                 try {
-                    // 初始化
+                    // 初始化 类加载器 、实例化Catalina对象:daemon
                     bootstrap.init();
                 } catch (Throwable t) {
                     handleThrowable(t);

@@ -1,3 +1,8 @@
 /.idea
-/catalina-home/*
+/catalina-home/lib/*
+/catalina-home/logs/*
+/catalina-home/temp/*
+/catalina-home/webapps/*
+/catalina-home/work/*
+/catalina-home/conf/Catalina/*
 /apache-tomcat-8.iml
