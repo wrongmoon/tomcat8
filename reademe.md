@@ -16,8 +16,9 @@
 ```
 778: context.addServletContainerInitializer(new JasperInitializer(),null);
 ```
-2.tomcat的启动过程：org.apache.catalina.startup.Bootstrap
+## tomcat的启动过程：
+org.apache.catalina.startup.Bootstrap
 
-2.1.static 静态代码块
+### 2.1.static 静态代码块
 
-2.2.main 方法
+### 2.2.main 方法
